@@ -103,7 +103,8 @@ def findHS (im):
  
 	
 	return path
-	
+
+# use transpose function combined with findHS to find vertical seams 
 def findVS ( im ): 
 	
 	im = transposeImage(im)
@@ -113,7 +114,8 @@ def findVS ( im ):
 		temp.reverse()
 		u[i] = tuple(temp)
 	return u
-	
+
+# function used to mark seams
 def mark_seam (img, path):
 
 	pix = img.load()
@@ -125,11 +127,10 @@ def mark_seam (img, path):
 	else:
 		for pixel in path:
 			pix[pixel] = 0
-	
 
 	return img
 			
-
+# if find a seam, just remove it from image
 def deleteHS (img, path):
 
 	width, height = img.size
@@ -150,7 +151,7 @@ def deleteHS (img, path):
 
 	return i
 			
-
+# if find a seam, just remove it from image
 def deleteVS (img, path):
 
 
@@ -171,7 +172,8 @@ def deleteVS (img, path):
 		
 	return i
 
-	
+
+# if find a seam, just add it from image
 def addVS(img, path):
 
 	width, height = img.size
@@ -196,7 +198,8 @@ def addVS(img, path):
 				
 
 	return i
-	
+
+# if find a seam, just add it from image
 def addHS(img, path):
 
 	width, height = img.size
@@ -221,7 +224,9 @@ def addHS(img, path):
 				
 
 	return i		
-				
+
+# function used to calculate average between 2 neighbors
+# used in adding seams
 def calAvg (u, v):
 
 	w = list(u)
@@ -233,7 +238,8 @@ def calAvg (u, v):
 def argmin(sequence, vals):
 
 	return sequence[ vals.index(min(vals)) ]
-	
+
+# main function used to resize image 
 def resize(inImage_img, resolution, output, mark):
 	
 	inImage = Image.open(inImage_img)
@@ -248,6 +254,10 @@ def resize(inImage_img, resolution, output, mark):
 		inImage = deleteVS(inImage, u)
 		width = inImage.size[0]
 	
+	# if adding seams, we have create a copy of original image
+	# and get seams from reduced seams in the copy
+	# then added all seams to create new image
+	# otherwise the finding seams will keep finding same seam
 	if width < resolution[0]:
 		seamSet = []
 		while width < resolution[0]:
@@ -269,6 +279,10 @@ def resize(inImage_img, resolution, output, mark):
 		height = inImage.size[1]
 
 
+	# if adding seams, we have create a copy of original image
+	# and get seams from reduced seams in the copy
+	# then added all seams to create new image
+	# otherwise the finding seams will keep finding same seam
 	if height < resolution[1]:
 		copy2 = inImage.copy()
 		seamSet = []
